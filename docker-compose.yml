@@ -3,7 +3,7 @@ front:
   volumes_from:
     - app
   volumes:
-    - ./data/nginx/logs:/var/log/nginx
+    - ./docker/data/nginx/logs:/var/log/nginx
   links:
     - app
   ports:
@@ -16,10 +16,17 @@ app:
   links:
     - db
 
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  links:
+    - db
+  ports:
+   - 8080:80
+
 db:
-  image: mysql
+  image: mariadb
   volumes:
-    - ./data/mysql:/var/lib/mysql
+    - ./docker/data/mysql:/var/lib/mysql
   environment:
     MYSQL_ROOT_PASSWORD: 'wordpress'
     MYSQL_DATABASE: 'wordpress'
