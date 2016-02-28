@@ -1,0 +1,27 @@
+front:
+  build: docker/front
+  volumes_from:
+    - app
+  volumes:
+    - ./data/nginx/logs:/var/log/nginx
+  links:
+    - app
+  ports:
+    - 80:80
+
+app:
+  build: docker/app
+  volumes:
+    - .:/var/www/html
+  links:
+    - db
+
+db:
+  image: mysql
+  volumes:
+    - ./data/mysql:/var/lib/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: 'wordpress'
+    MYSQL_DATABASE: 'wordpress'
+    MYSQL_USER: 'wordpress'
+    MYSQL_PASSWORD: 'wordpress'
