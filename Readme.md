@@ -1,7 +1,7 @@
 # Install
 
-- [Docker](https://docs.docker.com/engine/installation/)
-- [Docker compose](https://docs.docker.com/compose/install/)
+- <a href="https://docs.docker.com/engine/installation/" target="_blank">Docker</a>
+- <a href="https://docs.docker.com/compose/install/" target="_blank">Docker compose</a>
 
 # Run
 
