@@ -11,3 +11,7 @@
 # Stop
 - `docker-compose down`
 - `docker-compose rm`
+
+# Access
+- website : <a href="http://localhost:80/" target="_blank">http://localhost:80</a>
+- phpmyadmin : <a href="http://localhost:8080/" target="_blank">http://localhost:8080</a>
