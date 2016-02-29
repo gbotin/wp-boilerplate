@@ -24,7 +24,8 @@ phpmyadmin:
    - 8080:80
 
 db:
-  image: mariadb
+  build: docker/db
+  container_name: wordpressdb
   volumes:
     - ./docker/data/mysql:/var/lib/mysql
   environment:
