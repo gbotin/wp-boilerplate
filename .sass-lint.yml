@@ -1,0 +1,11 @@
+options:
+  formatter: stylish
+
+files:
+  include: '**/*.s+(a|c)ss'
+
+rules:
+  placeholder-in-extend: 0
+  force-element-nesting: 0
+  indentation: 0
+  final-newline: 0
