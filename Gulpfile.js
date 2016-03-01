@@ -1,14 +1,16 @@
-var gulp        = require('gulp');
-var sass        = require('gulp-sass');
-var rename      = require('gulp-rename');
-var browserify  = require('browserify');
-var babelify    = require('babelify');
-var watchify    = require('watchify');
-var source      = require('vinyl-source-stream');
-var buffer      = require('vinyl-buffer');
-var through2    = require('through2');
-var es          = require('event-stream');
-var livereload  = require('gulp-livereload');
+var gulp          = require('gulp');
+var sass          = require('gulp-sass');
+var rename        = require('gulp-rename');
+var browserify    = require('browserify');
+var babelify      = require('babelify');
+var watchify      = require('watchify');
+var source        = require('vinyl-source-stream');
+var buffer        = require('vinyl-buffer');
+var through2      = require('through2');
+var es            = require('event-stream');
+var livereload    = require('gulp-livereload');
+var imagemin      = require('gulp-imagemin');
+var autoprefixer  = require('gulp-autoprefixer');
 
 var themeDir = "wp-content/themes/template/";
 
@@ -20,7 +22,8 @@ var config = {
       themeDir + "src/sass/main.sass"
     ],
     includePaths: [
-      "bower_components/bootstrap-sass/assets/stylesheets"
+      "bower_components/bootstrap-sass/assets/stylesheets",
+      'bower_components/font-awesome/scss'
     ]
   },
 
@@ -32,6 +35,21 @@ var config = {
     includePaths: [
       "bower_components/jquery/dist",
       "bower_components/bootstrap-sass/assets/javascripts",
+    ]
+  },
+
+  images: {
+    dest: themeDir + "dist/images/",
+    sources: [
+      themeDir + "src/images/**/*.{jpg,jpeg,png,gif}"
+    ]
+  },
+
+  fonts: {
+    dest: themeDir + "dist/fonts/",
+    sources: [
+      themeDir + "src/fonts/**/*.{eot,woff,woff2,svg,ttf}",
+      "bower_components/font-awesome/fonts/**.{eot,woff,woff2,svg,ttf}"
     ]
   }
 
@@ -100,22 +118,47 @@ gulp.task("scripts", function () {
 
 gulp.task("sass", function () {
   gulp.src(config.sass.sources)
-    .pipe(sass({
-      outputStyle: 'nested',
-      includePaths: config.sass.includePaths,
-      errLogToConsole: true
-    }))
+    .pipe(
+      sass({
+        outputStyle: 'nested',
+        includePaths: config.sass.includePaths,
+      }).on('error', sass.logError))
+    .pipe(autoprefixer({
+      browsers: [
+        'last 2 versions',
+        'ie 8',
+        'ie 9',
+        'android 2.3',
+        'android 4',
+        'opera 12'
+      ]}))
     .pipe(gulp.dest(config.sass.dest))
     .pipe(livereload());
+});
+
+gulp.task("images", function(){
+  gulp.src(config.images.sources)
+  .pipe(imagemin())
+  .pipe(gulp.dest(config.images.dest))
+  .pipe(livereload());
+});
+
+gulp.task("fonts", function(){
+  gulp.src(config.fonts.sources)
+  .pipe(gulp.dest(config.fonts.dest))
+  .pipe(livereload());
 });
 
 gulp.task("watch", function () {
   livereload.listen();
 
-  gulp.watch(themeDir + "/sass/**/*.{sass,scss}", ["sass"]);
+  gulp.watch(themeDir + "/src/images/**/*.{sass,scss}", ["sass"]);
+  gulp.watch(config.images.sources, ["images"]);
+  gulp.watch(config.images.fonts, ["fonts"]);
+  
   bundle({watch: true});
 });
 
-gulp.task("build", ["sass", "scripts"]);
+gulp.task("build", ["sass", "scripts", "fonts", "images"]);
 
 gulp.task("default", ["build", "watch"]);
