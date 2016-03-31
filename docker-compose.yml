@@ -3,7 +3,7 @@ front:
   volumes_from:
     - app
   volumes:
-    - ./docker/data/nginx/logs:/var/log/nginx
+    - ./docker/cache/nginx/logs:/var/log/nginx
   links:
     - app
   ports:
@@ -27,7 +27,7 @@ db:
   build: docker/db
   container_name: wordpressdb
   volumes:
-    - ./docker/data/mysql:/var/lib/mysql
+    - ./docker/cache/mysql:/var/lib/mysql
   environment:
     MYSQL_ROOT_PASSWORD: 'wordpress'
     MYSQL_DATABASE: 'wordpress'

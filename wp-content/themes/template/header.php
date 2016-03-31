@@ -1,70 +1,52 @@
 <!doctype html>
 <html <?php language_attributes(); ?>>
-	<head>
+  <head>
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="icon" href="<?php bloginfo('template_directory'); ?>/favicon.ico">
 		<?php wp_head(); ?>
 	</head>
 
 	<body <?php body_class(); ?>>
-		<div id="page" class="site">
-			<div class="site-inner">
-				<header id="masthead" class="site-header" role="banner">
-					<div class="site-header-main">
-						<div class="site-branding">
-							<?php if ( is_front_page() && is_home() ) : ?>
-								<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></h1>
-							<?php else : ?>
-								<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></p>
-							<?php endif;
 
-							$description = get_bloginfo( 'description', 'display' );
-							if ( $description || is_customize_preview() ) : ?>
-								<p class="site-description"><?php echo $description; ?></p>
-							<?php endif; ?>
-						</div><!-- .site-branding -->
+    <header role="banner">
 
-						<?php if ( has_nav_menu( 'primary' ) || has_nav_menu( 'social' ) ) : ?>
-							<button id="menu-toggle" class="menu-toggle"><?php _e( 'Menu', 'twentysixteen' ); ?></button>
+      <nav id="navbar" class="navbar navbar-default" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="navbar-brand" rel="home">
+              <img
+                src="<?php bloginfo('template_directory'); ?>/dist/images/logo.png"
+                alt="<?php bloginfo('description') ?>" />
+            </a>
 
-							<div id="site-header-menu" class="site-header-menu">
-								<?php if ( has_nav_menu( 'primary' ) ) : ?>
-									<nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_attr_e( 'Primary Menu', 'twentysixteen' ); ?>">
-										<?php
-											wp_nav_menu( array(
-												'theme_location' => 'primary',
-												'menu_class'     => 'primary-menu',
-											 ) );
-										?>
-									</nav><!-- .main-navigation -->
-								<?php endif; ?>
+            <div class="collapse-controls">
+              <button type="button" class="navbar-toggle menu-toggle"
+                data-toggle="collapse"
+                data-target="#navbar-menu">
+                <i class="fa fa-bars"></i>
+              </button>
+            </div>
+          </div>
 
-								<?php if ( has_nav_menu( 'social' ) ) : ?>
-									<nav id="social-navigation" class="social-navigation" role="navigation" aria-label="<?php esc_attr_e( 'Social Links Menu', 'twentysixteen' ); ?>">
-										<?php
-											wp_nav_menu( array(
-												'theme_location' => 'social',
-												'menu_class'     => 'social-links-menu',
-												'depth'          => 1,
-												'link_before'    => '<span class="screen-reader-text">',
-												'link_after'     => '</span>',
-											) );
-										?>
-									</nav><!-- .social-navigation -->
-								<?php endif; ?>
-							</div><!-- .site-header-menu -->
-						<?php endif; ?>
-					</div><!-- .site-header-main -->
+          <?php
+            wp_nav_menu(array(
+              'theme_location' => 'primary',
+              'container' => 'ul',
+              'menu_id' => 'navbar-menu',
+              'menu_class' => 'nav navbar-nav navbar-right collapse navbar-collapse navbar-menu',
+              'depth' => 0
+            ));
+          ?>
 
-					<?php if ( get_header_image() ) : ?>
+          <ul class="nav navbar-nav navbar-languages">
+            <?php pll_the_languages(array('display_names_as' => 'slug')); ?>
+          </ul>
 
-						<div class="header-image">
-							<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-								<img src="<?php header_image(); ?>" srcset="<?php echo esc_attr( wp_get_attachment_image_srcset( get_custom_header()->attachment_id ) ); ?>" sizes="<?php echo esc_attr( $custom_header_sizes ); ?>" width="<?php echo esc_attr( get_custom_header()->width ); ?>" height="<?php echo esc_attr( get_custom_header()->height ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>">
-							</a>
-						</div><!-- .header-image -->
-					<?php endif; // End header image check. ?>
-				</header><!-- .site-header -->
+        </div>
+      </nav>
 
-				<div id="content" class="site-content">
+    </header>
+
+    <div id="content-main" class="container">
+      <div class="row">

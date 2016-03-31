@@ -1,15 +1,13 @@
-<?php
-/**
- * The template for the sidebar containing the main widget area
- *
- * @package WordPress
- * @subpackage Twenty_Sixteen
- * @since Twenty Sixteen 1.0
- */
-?>
+<aside class="col-sm-4" role="complementary">
 
-<?php if ( is_active_sidebar( 'sidebar-1' )  ) : ?>
-	<aside id="secondary" class="sidebar widget-area" role="complementary">
+	<?php get_search_form(); ?>
+
+	<div class="sidebar-widget">
 		<?php dynamic_sidebar( 'sidebar-1' ); ?>
-	</aside><!-- .sidebar .widget-area -->
-<?php endif; ?>
+	</div>
+
+	<div class="sidebar-widget">
+		<?php dynamic_sidebar( 'sidebar-2' ); ?>
+	</div>
+
+</aside>
