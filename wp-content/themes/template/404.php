@@ -4,11 +4,7 @@
 
 	<section class="error-404 not-found">
 
-		<header>
-			<h1>
-        <?php _e( 'Oups! Cette page n\'a pas êté trouvée.', 'template' ); ?>
-      </h1>
-		</header>
+		<?php get_template_part('templates/page-header') ?>
 
 		<article>
 			<p><?php _e( 'Il semble que rien n\'a été trouvé à cet endroit. Essayez peut-être une recherche ?', 'template' ); ?></p>

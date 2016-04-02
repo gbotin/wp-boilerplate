@@ -4,22 +4,13 @@
 
   <footer id="footer" class="container">
 
+    <hr>
+
     <div class="row">
-
-      <?php for ($i = 0; $i < 4; $i++) : ?>
-        <div class="col-xs-6 col-md-3">
-          <?php
-            wp_nav_menu(array(
-              'theme_location' => 'footer-pos-' . $i,
-              'container' => 'ul',
-              'menu_class' => 'list-unstyled',
-              'depth' => 0
-            ));
-          ?>
-        </div>
-      <?php endfor; ?>
-
+        <?php dynamic_sidebar( 'footer' ); ?>
     </div>
+
+    <hr>
 
     <div class="row">
       <div class="col-xs-12 text-center">

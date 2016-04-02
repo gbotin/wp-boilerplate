@@ -43,6 +43,18 @@ function register_widgets() {
       'after_title'   => '</h4>',
     )
   );
+
+  register_sidebar(
+    array(
+      'id'            => 'footer',
+      'name'          => __( 'Pieds de page', 'template' ),
+      'description'   => __( 'Ajouter des widgets ici pour qu\'ils apparaîssent dans votre pieds de page.', 'template' ),
+      'before_widget' => '<section id="%1$s" class="col-sm-3 widget %2$s">',
+      'after_widget'  => '</section>',
+      'before_title'  => '<h4 class="widget-title">',
+      'after_title'   => '</h4>',
+    )
+  );
 }
 add_action( 'widgets_init', 'register_widgets' );
 
@@ -60,5 +72,6 @@ remove_action( 'wp_head', 'rest_output_link_wp_head', 10, 0 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
 require get_template_directory() . '/inc/customizer.php';
-
+require get_template_directory() . '/inc/extras.php';
 require get_template_directory() . '/inc/paginator.php';
+require get_template_directory() . '/inc/entry.php';

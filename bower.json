@@ -1,11 +1,10 @@
 {
   "name": "wp-boilerplate",
   "description": "Wordpress boilerplate",
-  "main": "index.js",
   "authors": [
     "gbotin <geoffrey.botin@gmail.com>"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://github.com/gbotin/wp-boilerplate",
   "moduleType": [],
   "ignore": [

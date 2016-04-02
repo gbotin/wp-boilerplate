@@ -4,14 +4,31 @@
 
   <section class="search">
 
-  	<header>
-  		<h1>
-        <?php printf( __( 'Résultats de recherche pour : %s', 'template' ), '<span>' . esc_html(get_search_query()) . '</span>' ); ?>
-      </h1>
-  	</header>
+  	<?php get_template_part('templates/page-header') ?>
 
-    <?php get_template_part('loop') ?>
-    <?php get_template_part('pagination') ?>
+    <?php
+
+      if (have_posts()) :
+
+        while (have_posts()) : the_post();
+
+          get_template_part('templates/content', 'search');
+
+        endwhile;
+
+        ?>
+          <footer>
+            <?php paginator(); ?>
+          </footer>
+        <?php
+
+      else:
+
+      get_template_part('templates/content', 'none');
+
+      endif;
+
+    ?>
 
   </section>
 

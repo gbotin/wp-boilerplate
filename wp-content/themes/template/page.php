@@ -1,21 +1,18 @@
 <?php get_header(); ?>
 
-<main id="main" role="main">
+<main id="main" class="col-sm-8" role="main">
 
-  <?php
-	  while ( have_posts() ) :
+  <section class="page">
 
-      the_post();
+    <?php while (have_posts()) : the_post(); ?>
 
-  		get_template_part( 'template-parts/content', 'page' );
+      <?php get_template_part('templates/content', 'page'); ?>
 
-  		if ( comments_open() || get_comments_number() ) {
-  			comments_template();
-  		}
+    <?php endwhile; ?>
 
-	  endwhile;
-	?>
+  </section>
 
 </main>
 
+<?php get_sidebar(); ?>
 <?php get_footer(); ?>

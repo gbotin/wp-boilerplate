@@ -15,9 +15,10 @@
         <div class="container">
           <div class="navbar-header">
             <a href="<?php echo esc_url(home_url('/')); ?>" class="navbar-brand" rel="home">
-              <img
+              <!-- <img
                 src="<?php bloginfo('template_directory'); ?>/dist/images/logo.png"
-                alt="<?php bloginfo('description') ?>" />
+                alt="<?php bloginfo('description') ?>" /> -->
+              WP Boilerplate
             </a>
 
             <div class="collapse-controls">
@@ -35,7 +36,7 @@
               'container' => 'ul',
               'menu_id' => 'navbar-menu',
               'menu_class' => 'nav navbar-nav navbar-right collapse navbar-collapse navbar-menu',
-              'depth' => 0
+              'depth' => 2
             ));
           ?>
 

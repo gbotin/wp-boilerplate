@@ -65,3 +65,39 @@ function paginator() {
   echo '</ul></div>' . "\n";
 
 }
+
+
+function pager( $args = array () ) {
+
+  global $page, $numpages, $multipage, $more;
+
+  if ( ! $multipage )
+  {
+      return;
+  }
+
+  $output .= '<nav><ul class="pager">';
+
+  if ( $more ) {
+      $prev = $page - 1;
+
+      if ( $prev ) {
+          $link = '<li class="previous">'._wp_link_page($prev).'<i class="fa fa-angle-double-left"></i> '.__('Page précédente', 'template').'</a></li>';
+          $output .= apply_filters( 'wp_link_pages_link', $link, $prev );
+      }
+
+      $next = $page + 1;
+
+      if ( $next <= $numpages ) {
+          if ( $prev ) {
+              $output .= ' ';
+          }
+          $link = '<li class="next">'._wp_link_page($next). __('Page suivante', 'template').' <i class="fa fa-angle-double-right"></i></a></li>';
+          $output .= apply_filters( 'wp_link_pages_link', $link, $next );
+      }
+  }
+
+  $output .= '</ul></nav>';
+
+  echo apply_filters('wp_link_pages', $output);
+}
