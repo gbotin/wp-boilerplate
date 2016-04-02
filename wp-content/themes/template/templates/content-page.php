@@ -1,9 +1,13 @@
-<?php get_template_part('templates/page-header') ?>
+<article <?php post_class(); ?>>
 
-<section>
-  <?php the_content(); ?>
-</section>
+  <?php get_template_part('templates/page-header') ?>
 
-<footer>
-  <?php pager(); ?>
-</footer>
+  <section>
+    <?php the_content(); ?>
+  </section>
+
+  <footer>
+    <?php pager(); ?>
+  </footer>
+
+</article>
