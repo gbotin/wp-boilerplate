@@ -4,6 +4,12 @@
 
     <?php get_template_part('templates/page-header') ?>
 
+    <?php if (has_post_thumbnail()) : ?>
+      <div class="thumbnail">
+        <?php the_post_thumbnail(); ?>
+      </div>
+    <?php endif; ?>
+
     <section>
       <?php the_content(); ?>
     </section>
