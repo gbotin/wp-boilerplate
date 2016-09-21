@@ -15,7 +15,7 @@
 
 ### Slowly
 - `rm wp-config.php`
-- `docker exec -t <app_container_name> wp core install --url=localhost --title=<title> --admin_user=<admin> --admin_password=<password> --admin_email=<email>
+- `docker exec -t <app_container_name> wp core install --url=localhost --title=<title> --admin_user=<admin> --admin_password=<password> --admin_email=<email>`
 - `docker exec -t <app_container_name> wp core config --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --dbhost=db`
 - `docker exec -t <app_container_name> wp core update`
 - `docker exec -t <app_container_name> wp core update-db`
