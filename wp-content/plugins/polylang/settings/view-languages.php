@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * displays the Languages admin panel
  */
 
@@ -8,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 };
 ?>
 <div class="wrap">
-	<h1><?php _e( 'Languages', 'polylang' ); ?></h1>
+	<h1><?php esc_html_e( 'Languages', 'polylang' ); ?></h1>
 	<h2 class="nav-tab-wrapper"><?php
 	// display tabs
 	foreach ( $tabs as $key => $name ) {
@@ -29,6 +30,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		break;
 
 		default:
+			/**
+			 * Fires when loading the active Polylang settings tab
+			 * Allows plugins to add their own tab
+			 *
+			 * @since 1.5.1
+			 */
 			do_action( 'pll_settings_active_tab_' . $this->active_tab );
 		break;
 	}?>

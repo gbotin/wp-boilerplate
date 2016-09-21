@@ -25,7 +25,6 @@ phpmyadmin:
 
 db:
   build: docker/db
-  container_name: wordpressdb
   volumes:
     - ./docker/cache/mysql:/var/lib/mysql
   environment:

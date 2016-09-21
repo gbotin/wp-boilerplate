@@ -1,13 +1,22 @@
-var themeDir = "./wp-content/themes/template/";
+var dest = "./wp-content/themes/template/dist";
+var src = "./wp-content/themes/template/src";
 
 module.exports = {
 
-  theme: themeDir,
+  dest: dest,
+  src: src,
 
-  sass: {
-    dest: themeDir + "dist/css/",
-    sources: [
-      themeDir + "src/sass/main.sass"
+  sourcemaps: true,
+  minify: true,
+
+  styles: {
+    dest: dest + "/css",
+    paths: [
+      src + "/styles/**/*"
+    ],
+    entrypoints: [
+      src + "/styles/main.scss",
+      src + "/styles/editor.scss"
     ],
     includePaths: [
       "bower_components/bootstrap-sass/assets/stylesheets",
@@ -15,28 +24,34 @@ module.exports = {
     ]
   },
 
-  js: {
-    dest: themeDir + "dist/js/",
-    sources: [
-      themeDir + "src/scripts/application.es6",
+  scripts: {
+    dest: dest + "/js",
+    paths: [
+      src + "src/scripts/**/*"
     ],
-    includePaths: [
-      "bower_components/jquery/dist",
-      "bower_components/bootstrap-sass/assets/javascripts",
+    bundles: [
+      {
+        files: [
+          "bower_components/bootstrap-sass/assets/javascripts/bootstrap.js",
+          src +"/scripts/application.js"
+        ],
+        dest: dest + "/js",
+        output: 'bundle.js'
+      },
     ]
   },
 
   images: {
-    dest: themeDir + "dist/images/",
-    sources: [
-      themeDir + "src/images/**/*.{jpg,jpeg,png,gif}"
+    dest: dest + "/images",
+    paths: [
+      src + "/images/**/*.{jpg,jpeg,png,gif}"
     ]
   },
 
   fonts: {
-    dest: themeDir + "dist/fonts/",
-    sources: [
-      themeDir + "src/fonts/**/*.{eot,woff,woff2,svg,ttf}",
+    dest: dest + "/fonts",
+    paths: [
+      src + "/fonts/**/*.{eot,woff,woff2,svg,ttf}",
       "bower_components/font-awesome/fonts/**.{eot,woff,woff2,svg,ttf}"
     ]
   }

@@ -1,13 +1,13 @@
 <?php
 
-/*
+/**
  * manages strings translations storage
  *
  * @since 1.2
  */
 class PLL_MO extends MO {
 
-	/*
+	/**
 	 * registers the polylang_mo custom post type, only at first object creation
 	 *
 	 * @since 1.2
@@ -19,7 +19,7 @@ class PLL_MO extends MO {
 		}
 	}
 
-	/*
+	/**
 	 * writes a PLL_MO object into a custom post
 	 *
 	 * @since 1.2
@@ -36,7 +36,8 @@ class PLL_MO extends MO {
 			$strings[] = array( $entry->singular, $this->translate( $entry->singular ) );
 		}
 
-		$post = get_post( $lang->mo_id, ARRAY_A ); // wp_insert_post wants an array
+		// we need to make sure that $post is empty when $lang->mo_id is empty: see https://wordpress.org/support/topic/problem-when-adding-a-language
+		$post = empty( $lang->mo_id ) ? array() : get_post( $lang->mo_id, ARRAY_A ); // wp_insert_post wants an array
 
 		$post['post_title'] = 'polylang_mo_' . $lang->term_id;
 		// json_encode would take less space but is slower to decode
@@ -47,7 +48,7 @@ class PLL_MO extends MO {
 		wp_insert_post( $post );
 	}
 
-	/*
+	/**
 	 * reads a PLL_MO object from a custom post
 	 *
 	 * @since 1.2
@@ -66,7 +67,7 @@ class PLL_MO extends MO {
 		}
 	}
 
-	/*
+	/**
 	 * returns the post id of the post storing the strings translations
 	 *
 	 * @since 1.4
@@ -76,6 +77,15 @@ class PLL_MO extends MO {
 	 */
 	public static function get_id( $lang ) {
 		global $wpdb;
-		return $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type= %s", 'polylang_mo_' . $lang->term_id, 'polylang_mo' ) );
+
+		$ids = wp_cache_get( 'polylang_mo_ids' );
+
+		if ( empty( $ids ) ) {
+			$ids = $wpdb->get_results( "SELECT post_title, ID FROM $wpdb->posts WHERE post_type='polylang_mo'", OBJECT_K );
+			wp_cache_add( 'polylang_mo_ids', $ids );
+		}
+
+		// The mo id for a language can be transiently empty
+		return isset( $ids[ 'polylang_mo_' . $lang->term_id ] ) ? $ids[ 'polylang_mo_' . $lang->term_id ]->ID : null;
 	}
 }

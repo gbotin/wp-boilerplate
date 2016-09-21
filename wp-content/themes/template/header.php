@@ -41,7 +41,7 @@
           ?>
 
           <ul class="nav navbar-nav navbar-languages">
-            <?php pll_the_languages(array('display_names_as' => 'slug')); ?>
+            <?php // pll_the_languages(array('display_names_as' => 'slug')); ?>
           </ul>
 
         </div>

@@ -14,21 +14,21 @@ if ( file_exists( PLL_LOCAL_DIR . '/pll-config.php' ) ) {
 	include_once( PLL_LOCAL_DIR . '/pll-config.php' );
 }
 
-/*
+/**
  * controls the plugin, as well as activation, and deactivation
  *
  * @since 0.1
  */
 class Polylang {
 
-	/*
+	/**
 	 * constructor
 	 *
 	 * @since 0.1
 	 */
 	public function __construct() {
-		// FIXME maybe not available on every installations but widely used by WP plugins
-		spl_autoload_register( array( &$this, 'autoload' ) ); // autoload classes
+		require_once( PLL_INC . '/functions-wpcom-vip.php' ); // VIP functions
+		spl_autoload_register( array( $this, 'autoload' ) ); // autoload classes
 
 		$install = new PLL_Install( POLYLANG_BASENAME );
 
@@ -39,7 +39,7 @@ class Polylang {
 
 		// plugin initialization
 		// take no action before all plugins are loaded
-		add_action( 'plugins_loaded', array( &$this, 'init' ), 1 );
+		add_action( 'plugins_loaded', array( $this, 'init' ), 1 );
 
 		// override load text domain waiting for the language to be defined
 		// here for plugins which load text domain as soon as loaded :(
@@ -54,7 +54,7 @@ class Polylang {
 		}
 	}
 
-	/*
+	/**
 	 * autoload classes
 	 *
 	 * @since 1.2
@@ -68,8 +68,8 @@ class Polylang {
 		}
 
 		$class = str_replace( '_', '-', strtolower( substr( $class, 4 ) ) );
-		$to_remove = array( 'post-', 'term-', 'settings-', 'admin-', 'frontend-', '-config', '-compat', '-model', 'advanced-' );
-		$dir = str_replace( $to_remove, array(), $class );
+		$to_find = array( 'media', 'share', 'slug', 'slugs', 'sync', 'translate', 'wpml', 'xdata' );
+		$dir = implode( '-', array_intersect( explode( '-', $class ), $to_find ) );
 
 		$dirs = array(
 			PLL_FRONT_INC,
@@ -90,7 +90,7 @@ class Polylang {
 		}
 	}
 
-	/*
+	/**
 	 * defines constants
 	 * may be overriden by a plugin if set before plugins_loaded, 1
 	 *
@@ -127,11 +127,11 @@ class Polylang {
 
 		// settings page whatever the tab
 		if ( ! defined( 'PLL_SETTINGS' ) ) {
-			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 'mlang' == $_GET['page'] ) || ( isset( $_POST['action'] ) && 'pll_save_options' == $_POST['action'] ) ) );
+			define( 'PLL_SETTINGS', is_admin() && ( ( isset( $_GET['page'] ) && 'mlang' == $_GET['page'] ) || ! empty( $_REQUEST['pll_ajax_settings'] ) ) );
 		}
 	}
 
-	/*
+	/**
 	 * Polylang initialization
 	 * setups models and separate admin and frontend
 	 *
@@ -151,7 +151,14 @@ class Polylang {
 			}
 		}
 
-		// /!\ this filter is fired *before* the $polylang object is available
+		/**
+		 * Filter the model class to use
+		 * /!\ this filter is fired *before* the $polylang object is available
+		 *
+		 * @since 1.5
+		 *
+		 * @param string $class either PLL_Model or PLL_Admin_Model
+		 */
 		$class = apply_filters( 'pll_model', PLL_SETTINGS ? 'PLL_Admin_Model' : 'PLL_Model' );
 		$model = new $class( $options );
 		$links_model = $model->get_links_model();
@@ -170,10 +177,25 @@ class Polylang {
 		}
 
 		if ( ! $model->get_languages_list() ) {
-			do_action( 'pll_no_language_defined' ); // to load overriden textdomains
+			/**
+			 * Fires when no language has been defined yet
+			 * Used to load overriden textdomains
+			 *
+			 * @since 1.2
+			 */
+			do_action( 'pll_no_language_defined' );
 		}
 
 		if ( ! empty( $polylang ) ) {
+			/**
+			 * Fires after the $polylang object is created and before the API is loaded
+			 *
+			 * @since 2.0
+			 *
+			 * @param object $polylang
+			 */
+			do_action_ref_array( 'pll_pre_init', array( &$polylang ) );
+
 			require_once( PLL_INC.'/api.php' ); // loads the API
 
 			if ( ! defined( 'PLL_WPML_COMPAT' ) || PLL_WPML_COMPAT ) {
@@ -182,7 +204,15 @@ class Polylang {
 			}
 
 			$polylang->init();
-			do_action( 'pll_init', $polylang );
+
+			/**
+			 * Fires after the $polylang object and the API is loaded
+			 *
+			 * @since 1.7
+			 *
+			 * @param object $polylang
+			 */
+			do_action_ref_array( 'pll_init', array( &$polylang ) );
 		}
 	}
 }

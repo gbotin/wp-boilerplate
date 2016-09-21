@@ -67,6 +67,26 @@ function paginator() {
 }
 
 
+function post_pager() {
+
+  echo '<nav><ul class="pager">';
+
+  if (get_adjacent_post(false, '', true)) :
+    echo '<li class="previous">' . get_previous_post_link('%link', __('<< Article précédent', 'template')) . '</li>';
+  else:
+    echo '<li class="previous disabled"><span>'. __('<< Article précédent', 'template') . '</span></li>';
+  endif;
+
+  if (get_adjacent_post(false, '', false)) :
+    echo '<li class="next">' . get_next_post_link('%link', __('<Article suivant >>', 'template')) . '</li>';
+  else:
+    echo '<li class="next disabled"><span>'. __('Article suivant >>', 'template') . '</span></li>';
+  endif;
+
+  echo '</ul></nav>';
+
+}
+
 function pager( $args = array () ) {
 
   global $page, $numpages, $multipage, $more;

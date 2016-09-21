@@ -1,120 +1,141 @@
 var gulp          = require('gulp');
-var sass          = require('gulp-sass');
-var rename        = require('gulp-rename');
-var browserify    = require('browserify');
-var babelify      = require('babelify');
-var watchify      = require('watchify');
-var source        = require('vinyl-source-stream');
-var buffer        = require('vinyl-buffer');
-var through2      = require('through2');
-var es            = require('event-stream');
-var livereload    = require('gulp-livereload');
 var imagemin      = require('gulp-imagemin');
+var gutil         = require('gulp-util');
+var sourcemaps    = require('gulp-sourcemaps');
+var uglify        = require('gulp-uglify');
+var livereload    = require('gulp-livereload');
+var sass          = require('gulp-sass');
+var gulpif        = require('gulp-if');
+var plumber       = require('gulp-plumber');
+var sequence      = require('gulp-sequence');
+var cssmin        = require('gulp-cssmin');
 var autoprefixer  = require('gulp-autoprefixer');
-var rev           = require('gulp-rev');
+var scsslint      = require('gulp-scss-lint');
+var sasslint      = require('gulp-sass-lint');
+var jshint        = require('gulp-jshint');
+var del           = require('del');
+var babelify      = require('babelify');
+var browserify    = require('browserify');
+var lazypipe      = require('lazypipe');
+var watchify      = require('watchify');
+var buffer        = require('vinyl-buffer');
+var source        = require('vinyl-source-stream');
+var rename        = require('gulp-rename');
+var _             = require('underscore');
+var concat        = require('gulp-concat');
+var es            = require('event-stream');
 
-var config = require('./gulp.config.js');
+var config = require('./gulp.config');
 
-var bundle = function (opts) {
-
-  var rebundle = function (bundler, stream, next) {
-
-    bundler
-      .transform(babelify, {
-        presets: ["es2015"],
-        extensions: [".es6"]
-      });
-
-    bundler.bundle(function (err, res) {
-      if (err) {
-        console.log(err);
-
-        if (next)
-          return next(err) ;
-
-        return err;
-      }
-
-      stream.contents = res;
-
-      stream
-        .pipe(source(stream.relative))
-        .pipe(buffer())
-        .pipe(rename({extname: '.js'}))
-        .pipe(gulp.dest(config.js.dest))
-        .pipe(livereload());
-
-      if (next)
-        return next(null, stream);
-    });
-  };
-
-  bundlers = through2.obj(function (stream, enc, next) {
-    b = browserify(stream.path, {
-      debug: true,
-      paths: config.js.includePaths,
-      cache: {},
-      packageCache: {}
-    });
-
-    if (opts.watch)
-      watchify(b);
-
-    b.on('update', function () {
-      rebundle(b, stream, null);
-    });
-
-    rebundle(b, stream, next);
-  });
-
-  gulp.src(config.js.sources)
-    .pipe(bundlers);
-};
-
-gulp.task("scripts", function () {
-  bundle({watch: false});
+// Clear build directory
+gulp.task("clean", function () {
+  return del(config.dest);
 });
 
-gulp.task("sass", function () {
-  gulp.src(config.sass.sources)
-    .pipe(
+gulp.task("compile:styles", function () {
+  return gulp.src(config.styles.entrypoints)
+    .pipe(plumber())
+    .pipe(gulpif(config.sourcemaps, sourcemaps.init()))
+    .pipe(gulpif('*.{scss,sass}',
       sass({
-        outputStyle: 'nested',
-        includePaths: config.sass.includePaths,
-      }).on('error', sass.logError))
+        includePaths: config.styles.includePaths,
+      })
+      .on('error', sass.logError)
+    ))
     .pipe(autoprefixer({
       browsers: [
         'last 2 versions',
         'android 4',
         'opera 12'
-      ]}))
-    .pipe(gulp.dest(config.sass.dest))
+      ]}
+    ))
+    .pipe(gulpif(config.minify, cssmin()))
+    .pipe(gulpif(config.minify, rename({suffix: '.min'})))
+    .pipe(gulpif(config.sourcemaps, sourcemaps.write('.')))
+    .pipe(gulp.dest(config.styles.dest))
     .pipe(livereload());
 });
 
-gulp.task("images", function(){
-  gulp.src(config.images.sources)
-  .pipe(imagemin())
-  .pipe(gulp.dest(config.images.dest))
-  .pipe(livereload());
+gulp.task("compile:scripts", function () {
+  var streams = [];
+
+  _.each(config.scripts.bundles, function(bundle) {
+    var stream = gulp.src(bundle.files)
+      .pipe(plumber())
+      .pipe(gulpif(config.sourcemaps, sourcemaps.init()))
+      .pipe(gulpif(config.minify, uglify()))
+      .pipe(concat(bundle.output))
+      .pipe(gulpif(config.minify, rename({suffix: '.min'})))
+      .pipe(gulpif(config.sourcemaps, sourcemaps.write('.')))
+      .pipe(gulp.dest(bundle.dest))
+      .pipe(livereload());
+
+    streams.push(stream);
+  });
+
+  return es.merge(streams);
 });
 
-gulp.task("fonts", function(){
-  gulp.src(config.fonts.sources)
-  .pipe(gulp.dest(config.fonts.dest))
-  .pipe(livereload());
+// Minify images and copy to build directory
+gulp.task("copy:images", function () {
+  return gulp.src(config.images.paths)
+    .pipe(imagemin({
+      progressive: true,
+      interlaced: true
+    }))
+    .pipe(gulp.dest(config.images.dest));
 });
 
+// Copy fonts to build directory
+gulp.task("copy:fonts", function () {
+  return gulp.src(config.fonts.paths)
+    .pipe(gulp.dest(config.fonts.dest));
+});
+
+gulp.task("lint:scripts", function() {
+  var lintJs = lazypipe()
+    .pipe(jshint)
+    .pipe(jshint.reporter, 'jshint-stylish');
+
+  return gulp.src(config.scripts.paths)
+    .pipe(gulpif('*.{js,es6}', lintJs()))
+  ;
+});
+
+// Lint styles and output to console
+gulp.task("lint:styles", function () {
+  var lintSass = lazypipe()
+    .pipe(sasslint)
+    .pipe(sasslint.format);
+
+  var lintScss = lazypipe()
+    .pipe(scsslint);
+
+  return gulp.src(config.styles.paths)
+    .pipe(gulpif('*.sass', lintSass()))
+    .pipe(gulpif('*.scss', lintScss()));
+});
+
+
+// Watch changes and recompile
 gulp.task("watch", function () {
   livereload.listen();
 
-  gulp.watch(config.theme + 'src/sass/**/*.{sass,scss}', ["sass"]);
-  gulp.watch(config.images.sources, ["images"]);
-  gulp.watch(config.fonts.sources, ["fonts"]);
+  gulp.watch(config.styles.paths, ["compile:styles"]);
+  gulp.watch(config.scripts.paths, ["compile:scripts"]);
 
-  bundle({watch: true});
+  gulp.watch(config.src + "/**/*", function (file) {
+    livereload.changed(file.path);
+  });
 });
 
-gulp.task("build", ["sass", "scripts", "fonts", "images"]);
+gulp.task("build", [
+  "compile:scripts",
+  "compile:styles",
+  "copy:fonts",
+  "copy:images"
+]);
 
-gulp.task("default", ["build", "watch"]);
+gulp.task("default", function(callback){
+  sequence("build", "watch", callback);
+});
