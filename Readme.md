@@ -4,7 +4,8 @@
 - <a href="https://docs.docker.com/compose/install/" target="_blank">Docker compose</a>
 
 # Setup
-- `npm install`
+- `npm install yarn`
+- `yarn install`
 - `bower install`
 - `gulp build`
 - `docker-compose build`

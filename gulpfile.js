@@ -33,14 +33,13 @@ gulp.task("clean", function () {
 });
 
 gulp.task("compile:styles", function () {
-  return gulp.src(config.styles.entrypoints)
+  gulp.src(config.styles.entrypoints)
     .pipe(plumber())
     .pipe(gulpif(config.sourcemaps, sourcemaps.init()))
     .pipe(gulpif('*.{scss,sass}',
-      sass({
-        includePaths: config.styles.includePaths,
-      })
-      .on('error', sass.logError)
+      sass.sync({
+        includePaths: config.styles.includePaths
+      }).on('error', sass.logError)
     ))
     .pipe(autoprefixer({
       browsers: [

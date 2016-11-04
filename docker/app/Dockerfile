@@ -15,7 +15,7 @@ RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-
 COPY scripts/wp-su.sh /bin/wp
 RUN chmod +x /bin/wp-cli.phar /bin/wp
 
-RUN docker-php-ext-install mysql
+RUN docker-php-ext-install mysql pdo pdo_mysql
 
 RUN chown -R www-data:www-data /var/www/html
 

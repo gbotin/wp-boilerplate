@@ -27,13 +27,13 @@ module.exports = {
   scripts: {
     dest: dest + "/js",
     paths: [
-      src + "src/scripts/**/*"
+      src + "/scripts/**/*"
     ],
     bundles: [
       {
         files: [
           "bower_components/bootstrap-sass/assets/javascripts/bootstrap.js",
-          src +"/scripts/application.js"
+          src + "/scripts/application.js"
         ],
         dest: dest + "/js",
         output: 'bundle.js'
