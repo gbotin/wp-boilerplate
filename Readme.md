@@ -1,15 +1,24 @@
-# Install
+# Requirements
 
-- <a href="https://docs.docker.com/engine/installation/" target="_blank">Docker</a>
-- <a href="https://docs.docker.com/compose/install/" target="_blank">Docker compose</a>
+- npm
+- ruby
+- <a href="https://docs.docker.com/engine/installation/" target="_blank">docker</a>
+- <a href="https://docs.docker.com/compose/install/" target="_blank">docker-compose</a>
 
 # Setup
-- `npm install yarn`
+
+## Assets
+- `npm i -g yarn bower gulp`
 - `yarn install`
 - `bower install`
 - `gulp build`
-- `docker-compose build`
-- `docker-compose up`
+
+## Virtualization
+- `brew install fswatch unison`
+- `gem install docker-sync`
+- `docker-sync-stack start`
+
+# Installation
 
 ### Quickly
 - `./install.sh -c <app_container_name> -t <title> -u <admin> -p <password> -e <email>`
@@ -26,15 +35,14 @@
 *app_container container must be running
 
 # Run
-- `docker-compose up`
+- `docker-sync-stack start`
 - `gulp`
 
 # Stop
-- `docker-compose down`
-- `docker-compose rm`
+- `docker-sync-stack clean`
 
 # Access
-- website : <a href="http://localhost:80/" target="_blank">http://localhost:80</a>
+- web : <a href="http://localhost:80/" target="_blank">http://localhost:80</a>
 - phpmyadmin : <a href="http://localhost:8080/" target="_blank">http://localhost:8080</a>
 
 # Data

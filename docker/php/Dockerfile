@@ -17,8 +17,6 @@ RUN chmod +x /bin/wp-cli.phar /bin/wp
 
 RUN docker-php-ext-install mysql pdo pdo_mysql
 
-RUN chown -R www-data:www-data /var/www/html
-
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
