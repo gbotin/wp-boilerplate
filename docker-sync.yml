@@ -7,7 +7,7 @@ syncs:
     dest: '/var/www/html'
     sync_strategy: 'unison'
     sync_user: 'www-data'
-    sync_userid: '1000'
+    sync_userid: '33'
     sync_excludes:
       - bower_components
       - node_modules
